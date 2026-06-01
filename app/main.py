@@ -8,26 +8,33 @@ from app.db.session import engine
 
 from app.api.routers.task import router as task_router
 
+from app.core.config import get_settings #функция, возвращающая все настройки, в том числе cors_allow_origins
+
+#получаю объект настроек, для того, чтобы корс пробросить
+settings = get_settings() #возможно лучше просто импортировать settings из db.session
+
 # class CategoryORM(Base):
 #     __tablename__ = "categories"
 
 #     name: Mapped[str]
 
+#используется асинхронный декоратор из базовой contextlib, позволяет в лайвспане задавать логику
+#перед началом обработки запросов и после окончания (yield - граница)
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    print("before")
-    Base.metadata.create_all(bind=engine)
-    print("after")
+    Base.metadata.create_all(bind=engine) #создаем все таблицы, если их нет в БД, если есть не создаем
     yield
 
 
-app = FastAPI(lifespan=lifespan)
-app.include_router(router=task_router)
+app = FastAPI(lifespan=lifespan) #объект фастапи (само приложение)
+app.include_router(router=task_router) #пробрасываем наш роутер для тасок
      
+#корс определяем, чтобы у fatapi было понимание, кто может подключаться и какие запросы, 
+# с какими заголовкам отправлять нашему серверу (не рекомендуется ставиь в методс и хэдэр * на продакшне)
 app.add_middleware(
     CORSMiddleware, 
     allow_origins = [
-        "http://localhost:3000"
+        settings.cors_allow_origins,
     ],
     allow_methods = ["*"],
     allow_headers = ["*"],

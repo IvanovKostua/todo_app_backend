@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-
+#тут все наши Pydantic модели (тела запросов)
 class Task(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
