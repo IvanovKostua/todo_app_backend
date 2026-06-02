@@ -7,11 +7,11 @@ from app.api.dependencies import get_task_service
 #в этом файле описыватся все роуты
 
 #создаем конкретный роутер под таски (для категорий надо создать второй)
-router = APIRouter(prefix="/tasks", tags=["tasks"])
+task_router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 #прописываем конкретные роуты (в скобках уже не будет /tasks, потому что указали префикс)
 # tags указан для групировки сваггером по этому тэгу
-@router.get("")
+@task_router.get("")
 def get_tasks(
     task_service: TaskService = Depends(get_task_service)
 ) -> list[Task]:
@@ -20,7 +20,7 @@ def get_tasks(
     #а тот уже обращается к БД
     return task_service.list_tasks()
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@task_router.post("", status_code=status.HTTP_201_CREATED)
 def create_task(
     payload: TaskCreate, 
     task_service: TaskService = Depends(get_task_service)
@@ -29,7 +29,7 @@ def create_task(
     # service->repository (слоистая архитектура - разделение ответственности и это все)
     return task_service.create_task(payload)
 
-@router.patch("/{task_id}")
+@task_router.patch("/{task_id}")
 def update_task(
     task_id: str, 
     payload: TaskUpdate, 
@@ -41,7 +41,7 @@ def update_task(
     except TaskNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+@task_router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id: str, task_service: TaskService = Depends(get_task_service)) -> None:
     #аналогично удаляем таску, если ее нет то ошибка
     try:

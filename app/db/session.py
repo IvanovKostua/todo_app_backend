@@ -7,7 +7,7 @@ from app.core.config import get_settings
 settings = get_settings()
 #создаем движок (связываем его с конкретной БД, поднятой по указанному адресу)
 engine = create_engine(settings.DATABASE_URL) #ДВИЖОК
-Sessionlocal = sessionmaker(autocomit=False, bind=engine) #СОЗДАНИЕ СЕССИЙ ДЛЯ ПОДКЛЮЕНИЯ
+Sessionlocal = sessionmaker(autocommit=False, bind=engine) #СОЗДАНИЕ СЕССИЙ ДЛЯ ПОДКЛЮЕНИЯ
 
 
 def get_db():
