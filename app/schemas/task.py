@@ -1,8 +1,9 @@
 from pydantic import BaseModel, ConfigDict
-#тут все наши Pydantic модели (тела запросов)
+
+
+# тут все наши Pydantic модели (тела запросов)
 class Task(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
 
     id: str
     title: str
@@ -16,5 +17,3 @@ class TaskCreate(BaseModel):
 class TaskUpdate(BaseModel):
     title: str | None = None
     completed: bool | None = None
-
-
